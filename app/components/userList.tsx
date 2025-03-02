@@ -12,102 +12,118 @@ export interface User {
 
 export default function UserList() {
     const { data: users, isLoading, error } = useFetchUsers();
-
     const { mutate: updateUser } = useMutate();
 
-    const [editUserId, setEditUserId] = useState<number | null>(null);
-    const [editField, setEditField] = useState<'name' | 'email' | null>(null);
-    const [name, setName] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
+    // Combine related state into a single object
+    const [editState, setEditState] = useState<{
+        userId: number | null;
+        field: 'name' | 'email' | null;
+        value: string;
+    }>({
+        userId: null,
+        field: null,
+        value: '',
+    });
     
-    const handleEditName = (userId: number) => {
-        setEditUserId(userId);
-        setEditField('name');
-        setName(users?.find((user: User) => user.id === userId)?.name || '');
-    }
-    
-    const handleEditEmail = (userId: number) => {
-        setEditUserId(userId);
-        setEditField('email');
-        setEmail(users?.find((user: User) => user.id === userId)?.email || '');
+    const handleEdit = (userId: number, field: 'name' | 'email') => {
+        const user = users?.find((user: User) => user.id === userId);
+        if (!user) return;
+        
+        setEditState({
+            userId,
+            field,
+            value: user[field] || '',
+        });
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
-    }
-
-    const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
+        setEditState({
+            ...editState,
+            value: e.target.value,
+        });
     }
 
     const handleSave = () => {
-        if (!editUserId) return;
+        if (!editState.userId || !editState.field) return;
         
-        const currentUser = users?.find(u => u.id === editUserId);
+        const currentUser = users?.find(u => u.id === editState.userId);
         if (!currentUser) return;
         
-        if (editField === 'name') {
-            updateUser({ 
-                ...currentUser,
-                name
-            });
-            setName('');
-        } else if (editField === 'email') {
-            updateUser({
-                ...currentUser,
-                email
-            });
-            setEmail('');
-        }
+        updateUser({
+            ...currentUser,
+            [editState.field]: editState.value,
+        });
         
-        setEditUserId(null);
-        setEditField(null);
+        // Reset edit state
+        setEditState({
+            userId: null,
+            field: null,
+            value: '',
+        });
     }
 
-    if (isLoading) return <div>Loading...</div>;
+    const handleCancel = () => {
+        setEditState({
+            userId: null,
+            field: null,
+            value: '',
+        });
+    }
 
+    // Extract the edit form into a separate component
+    const renderEditForm = () => (
+        <>
+            <input 
+                type="text" 
+                value={editState.value} 
+                onChange={handleChange} 
+                className="w-full p-2 border rounded mb-2"
+                autoFocus
+            />
+            <div className="flex space-x-2">
+                <button 
+                    onClick={handleSave}
+                    className="px-3 py-1 bg-blue-500 text-white rounded"
+                >
+                    Save
+                </button>
+                <button 
+                    onClick={handleCancel}
+                    className="px-3 py-1 bg-gray-500 text-white rounded"
+                >
+                    Cancel
+                </button>
+            </div>
+        </>
+    );
+
+    if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
     return (
         <ul className="space-y-4">
             {users?.map((user: User) => (
                 <li key={user.id} className="p-4 border rounded">
-                    {editUserId === user.id && editField === 'name' ? (
-                        <>
-                            <input 
-                                type="text" 
-                                value={name} 
-                                onChange={handleChange} 
-                                className="w-full p-2 border rounded"
-                            />
-                            <button onClick={handleSave}>Save</button>
-                        </>
-                    ) : editUserId === user.id && editField === 'email' ? (
-                        <>
-                            <input 
-                                type="text" 
-                                value={email} 
-                                onChange={handleChangeEmail} 
-                                className="w-full p-2 border rounded"
-                            />
-                            <button onClick={handleSave}>Save</button>
-                        </>
+                    {editState.userId === user.id ? (
+                        renderEditForm()
                     ) : (
                         <>
                             <h3 className="font-bold">{user.name}</h3>
                             <p>{user.email}</p>
-                            <button 
-                                onClick={() => handleEditName(user.id)}
-                                className="mr-2 px-3 py-1 bg-blue-500 text-white rounded"
-                            >
-                                Edit Name
-                            </button>
-                            <button 
-                                onClick={() => handleEditEmail(user.id)}
-                                className="px-3 py-1 bg-green-500 text-white rounded"
-                            >
-                                Edit Email
-                            </button>
+                            <div className="mt-2 flex space-x-2">
+                                <button 
+                                    onClick={() => handleEdit(user.id, 'name')}
+                                    className="px-3 py-1 bg-blue-500 text-white rounded"
+                                >
+                                    Edit Name
+                                </button>
+                                <button 
+                                    onClick={() => handleEdit(user.id, 'email')}
+                                    className="px-3 py-1 bg-green-500 text-white rounded"
+                                >
+                                    Edit Email
+                                </button>
+                            </div>
                         </>
                     )}
                 </li>
