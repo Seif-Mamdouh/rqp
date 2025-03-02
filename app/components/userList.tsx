@@ -14,7 +14,6 @@ export default function UserList() {
     const { data: users, isLoading, error } = useFetchUsers();
     const { mutate: updateUser } = useMutate();
 
-    // Combine related state into a single object
     const [editState, setEditState] = useState<{
         userId: number | null;
         field: 'name' | 'email' | null;
@@ -70,7 +69,6 @@ export default function UserList() {
         });
     }
 
-    // Extract the edit form into a separate component
     const renderEditForm = () => (
         <>
             <input 
