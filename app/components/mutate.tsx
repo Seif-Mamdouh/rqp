@@ -6,12 +6,10 @@ async function updateTodo(todo: Todo) {
     const totalTodos: Todo[] = JSON.parse(todosString);
     
     const todoIndex = totalTodos.findIndex((t: Todo) => t.id === todo.id);
-    
-    if (todoIndex !== -1) {
-        totalTodos[todoIndex] = todo;
+
+    totalTodos[todoIndex] = todo;
         
-        window.localStorage.setItem("todos", JSON.stringify(totalTodos));
-    }
+    window.localStorage.setItem("todos", JSON.stringify(totalTodos));
     
     return todo;
 }
