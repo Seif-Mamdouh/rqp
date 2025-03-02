@@ -1,18 +1,18 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { User } from './userList';
+import { Todo } from './dataList';
 
-async function fetchUsers(): Promise<User[]> {
-  const response = await fetch('https://jsonplaceholder.typicode.com/users');
+async function fetchTodos(): Promise<Todo[]> {
+  const response = await fetch('https://jsonplaceholder.typicode.com/todos');
   const data = await response.json();
-  window.localStorage.setItem("users", JSON.stringify(data));
+  window.localStorage.setItem("todos", JSON.stringify(data));
   return data;
 }
 
-export default function useFetchUsers() {
-  return useQuery<User[]>({
-    queryKey: ['users'],
-    queryFn: fetchUsers,
+export default function useFetchTodos() {
+  return useQuery<Todo[]>({
+    queryKey: ['todos'],
+    queryFn: fetchTodos,
   });
 }

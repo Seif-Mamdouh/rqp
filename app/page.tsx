@@ -1,5 +1,4 @@
-
-import UserList from "./components/userList";
+import DataList from "./components/dataList";
 
 export default function Home() {
   return (
@@ -7,7 +6,7 @@ export default function Home() {
         <h1 className="text-4xl font-bold">
           Welcome to the Home Page
         </h1>
-        <UserList />
+        <DataList />
       </div>
   );
 }
