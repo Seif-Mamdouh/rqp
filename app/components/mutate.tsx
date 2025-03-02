@@ -5,14 +5,11 @@ async function updateTodo(todo: Todo) {
     const todosString = window.localStorage.getItem("todos") || "[]";
     const totalTodos: Todo[] = JSON.parse(todosString);
     
-    // Find the index of the todo to update
     const todoIndex = totalTodos.findIndex((t: Todo) => t.id === todo.id);
     
     if (todoIndex !== -1) {
-        // Update the todo in the array
         totalTodos[todoIndex] = todo;
         
-        // Save back to localStorage
         window.localStorage.setItem("todos", JSON.stringify(totalTodos));
     }
     
