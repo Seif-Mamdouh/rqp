@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import useFetchTodos from './fetchUserData';
-import useUpdateTodo from './mutate';
+import useUpdateTodoList from './mutate';
 
 export interface Todo {
     id: number;
@@ -12,7 +12,7 @@ export interface Todo {
 
 export default function DataList() {
     const { data: todos, isLoading, error } = useFetchTodos();
-    const updateTodoMutation = useUpdateTodo();
+    const updateTodoMutation = useUpdateTodoList();
 
     const [currPage, setCurrPage] = useState(0);
 

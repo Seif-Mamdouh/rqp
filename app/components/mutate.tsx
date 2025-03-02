@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Todo } from './dataList';
 
-async function updateTodo(todo: Todo) {
+async function updateTodoList(todo: Todo) {
     const todosString = window.localStorage.getItem("todos") || "[]";
     const totalTodos: Todo[] = JSON.parse(todosString);
     
@@ -14,16 +14,15 @@ async function updateTodo(todo: Todo) {
     return todo;
 }
 
-export default function useUpdateTodo() {
+export default function useUpdateTodoList() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: updateTodo,
+        mutationFn: updateTodoList,
         onSuccess: (updatedTodo) => {
-            queryClient.setQueryData(['todos'], (old: Todo[] | undefined) => {
-                if (!old) return [];
-                return old.map((todo: Todo) => todo.id === updatedTodo?.id ? updatedTodo : todo);
-            });
+            queryClient.setQueryData(['todos'], (old: Todo[] )=> 
+                old.map(todo => todo.id === updatedTodo?.id ? updatedTodo : todo)
+            );
         }
     });
 }
