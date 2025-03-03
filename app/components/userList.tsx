@@ -35,7 +35,7 @@ export default function UserList() {
         setEditState({
             userId,
             field,
-            value: user[field] || '',
+            value: user[field] || '', 
         });
     }
 
@@ -43,7 +43,7 @@ export default function UserList() {
         setEditState({
             ...editState,
             value: e.target.value,
-        });
+            });
     }
 
     const handleSave = () => {
@@ -102,7 +102,7 @@ export default function UserList() {
         setSelectedUserId(userId);
     }
 
-    const filteredUsers = selectedUserId ? users?.filter((user: User) => user.id === selectedUserId) : users;
+    const filteredUsers = selectedUserId ? users?.filter((user) => user.id === selectedUserId) : users
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
