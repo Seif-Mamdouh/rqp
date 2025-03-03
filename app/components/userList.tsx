@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import useFetchUsers from './fetchUserData';
 import useMutate from './mutate';
+import Filter from './filter';
 
 export interface User {
     id: number;
@@ -10,15 +11,18 @@ export interface User {
     email: string;
 }
 
+interface EditState {
+    userId: number | null;
+    field: 'name' | 'email' | null;
+    value: string;
+}
+
 export default function UserList() {
     const { data: users, isLoading, error } = useFetchUsers();
     const { mutate: updateUser } = useMutate();
+    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
-    const [editState, setEditState] = useState<{
-        userId: number | null;
-        field: 'name' | 'email' | null;
-        value: string;
-    }>({
+    const [editState, setEditState] = useState<EditState>({
         userId: null,
         field: null,
         value: '',
@@ -53,7 +57,6 @@ export default function UserList() {
             [editState.field]: editState.value,
         });
         
-        // Reset edit state
         setEditState({
             userId: null,
             field: null,
@@ -95,12 +98,19 @@ export default function UserList() {
         </>
     );
 
+    const filterByUserId = (userId: number | null) => {
+        setSelectedUserId(userId);
+    }
+
+    const filteredUsers = selectedUserId ? users?.filter((user: User) => user.id === selectedUserId) : users;
+
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
     return (
         <ul className="space-y-4">
-            {users?.map((user: User) => (
+            <Filter selectedUserId={selectedUserId} onSelectedUserIdChange={filterByUserId} />
+            {filteredUsers?.map((user: User) => (
                 <li key={user.id} className="p-4 border rounded">
                     {editState.userId === user.id ? (
                         renderEditForm()
