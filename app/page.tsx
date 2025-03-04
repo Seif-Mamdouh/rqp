@@ -1,5 +1,6 @@
+'use client'
 
-import UserList from "./components/userList";
+import Weather from './components/weather'
 
 export default function Home() {
   return (
@@ -7,7 +8,7 @@ export default function Home() {
         <h1 className="text-4xl font-bold">
           Welcome to the Home Page
         </h1>
-        <UserList />
+        <Weather />
       </div>
   );
 }
