@@ -4,9 +4,11 @@ import React, { useState } from 'react'
 interface OnePageAtAtimeProps {
     onPageNext: (page: number) => void
     onPagePrev: (page: number) => void
+    disabledNext: boolean
+    disabledPrev: boolean
 }
 
-const OnePageAtAtime = ({onPageNext, onPagePrev}: OnePageAtAtimeProps) => {
+const OnePageAtAtime = ({onPageNext, onPagePrev, disabledNext, disabledPrev}: OnePageAtAtimeProps) => {
     const [page, setPage] = useState(0)
 
     const handlePageNext = () => {
@@ -22,9 +24,9 @@ const OnePageAtAtime = ({onPageNext, onPagePrev}: OnePageAtAtimeProps) => {
 
   return (
     <div>
-        <button onClick={handlePagePrev}>prev</button>
+        <button onClick={handlePagePrev} disabled={disabledPrev}>prev</button>
         <p>Page {page + 1}</p>
-        <button onClick={handlePageNext}>next</button>
+        <button onClick={handlePageNext} disabled={disabledNext}>next</button>
     </div>
   )
 }

@@ -20,11 +20,15 @@ const Weather = () => {
     const currIndex = data?.[page]
 
     const handlePageNext = () => {
-        setPage(page + 1)
+        if (page < (data?.length || 0) - 1) {
+            setPage(page + 1)
+        }
     }
 
     const handlePagePrev = () => {
-        setPage(page - 1)
+        if (page > 0) {
+            setPage(page - 1)
+        }
     }
 
     const handleSelectWeatherIdChange = (weatherId: number | null) => {
@@ -46,7 +50,12 @@ const Weather = () => {
           <p>{currIndex.windSpeed}</p>
         </div>
       )}
-      <OnePageAtAtime onPageNext={handlePageNext} onPagePrev={handlePagePrev} />
+      <OnePageAtAtime 
+        onPageNext={handlePageNext} 
+        onPagePrev={handlePagePrev}
+        disabledNext={page >= (data?.length || 0) - 1}
+        disabledPrev={page <= 0}
+      />
     </div>
   )
 }
