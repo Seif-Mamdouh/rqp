@@ -22,10 +22,10 @@ const Weather = () => {
 
 
     const handleAddFavorite = (e: React.MouseEvent<HTMLButtonElement>) => {
-        const favorite = data?.[page]?.city
-        if (favorite) {
+        const favoriteCity = data?.[page]?.city
+        if (favoriteCity) {
             e.preventDefault()
-            setFavorites([...favorites, favorite])
+            setFavorites([...favorites, favoriteCity])
         }
     }
 
