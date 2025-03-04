@@ -16,8 +16,22 @@ const Weather = () => {
 
     const [selectWeatherId, setSelectWeatherId] = useState<number | null>(null)
     const [page, setPage] = useState(0)
+    const [favorites, setFavorites] = useState<string[]>([])
 
     const currIndex = data?.[page]
+
+
+    const handleAddFavorite = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const favorite = data?.[page]?.city
+        if (favorite) {
+            e.preventDefault()
+            setFavorites([...favorites, favorite])
+        }
+    }
+
+    const handleRemoveFavorite = (favorite: string) => {
+        setFavorites(favorites.filter((f) => f !== favorite))
+    }
 
     const handlePageNext = () => {
         if (page < (data?.length || 0) - 1) {
@@ -48,6 +62,8 @@ const Weather = () => {
           <p>{currIndex.temperature}</p>
           <p>{currIndex.humidity}</p>
           <p>{currIndex.windSpeed}</p>
+          <button onClick={handleAddFavorite}>add</button>
+          <button onClick={() => handleRemoveFavorite(currIndex.city)}>remove</button>
         </div>
       )}
       <OnePageAtAtime 
@@ -56,6 +72,16 @@ const Weather = () => {
         disabledNext={page >= (data?.length || 0) - 1}
         disabledPrev={page <= 0}
       />
+
+      {favorites.length > 0 && (
+        <div>
+          {favorites.map((favorite) => (
+            <div key={favorite}>
+              <h2>{favorite}</h2>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
